@@ -1,7 +1,6 @@
 package com.github.greymatchagit.sortinganimation.util.navigation;
 
 import com.github.greymatchagit.sortinganimation.util.constants.Constant;
-import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -19,24 +18,23 @@ public class NavigationService {
     private static Stage stage = null;
     private static final Logger logger = Logger.getLogger("NavigationService");
 
-    public static boolean setStage(Stage stage) {
+    public static void setStage(Stage stage) {
         if (NavigationService.stage != null)
-            return false;
+            return;
 
         if (stage == null) {
             logger.log(Level.WARNING, "The stage passed is null.");
-            return false;
+            return;
         }
 
         NavigationService.stage = stage;
         logger.log(Level.INFO, "Stage has been set.");
-        return true;
     }
 
     public static void navigateTo(String fxmlName) {
         final String FXML_PATH =
             Constant.Navigation.GROUP_NAME_PATH +
-            "fxml/" +
+            Constant.Navigation.FXML_DIR +
             fxmlName;
 
         final URL FXML_URL = Constant.class.getResource(FXML_PATH);
