@@ -31,6 +31,8 @@ public class NavigationService {
             );
 
             stage.show();
+        } catch (NullPointerException e) {
+            throw new RuntimeException("NavigationService.stage has not yet been set.");
         } catch (IOException e) {
             throw new RuntimeException(
                 String.format(
