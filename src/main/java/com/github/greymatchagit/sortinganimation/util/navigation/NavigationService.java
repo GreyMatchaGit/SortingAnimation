@@ -11,8 +11,11 @@ import java.util.logging.Logger;
 
 public class NavigationService {
 
+    /**
+     *  A class to store all the existing fxml files.
+     */
     public static class Page {
-        public static final String MainMenu = "MainMenu.fxml";
+        public static final String LoadingScreen = "LoadingScreen.fxml";
     }
 
     private static Stage stage = null;

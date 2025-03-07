@@ -13,6 +13,6 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) {
         NavigationService.setStage(primaryStage);
-        NavigationService.navigateTo(NavigationService.Page.MainMenu);
+        NavigationService.navigateTo(NavigationService.Page.LoadingScreen);
     }
 }
