@@ -13,23 +13,23 @@
    <center>
       <AnchorPane fx:id="anchorpaneParent" BorderPane.alignment="CENTER">
          <children>
-            <Circle fx:id="circleSmall" fill="#fef3c7" layoutX="30.0" layoutY="30.0" radius="30.0" stroke="#f59e0b" strokeType="INSIDE" strokeWidth="4.0" />
-            <Circle fx:id="circleMedium" fill="#dbeafe" layoutX="50.0" layoutY="50.0" radius="50.0" stroke="#3b82f6" strokeType="INSIDE" strokeWidth="4.0" />
-            <Circle fx:id="circleLarge" fill="#dcfce7" layoutX="70.0" layoutY="70.0" radius="70.0" stroke="#22c55e" strokeType="INSIDE" strokeWidth="4.0" />
+            <Circle fx:id="circleSmall" fill="#fef3c7" layoutX="130.0" layoutY="130.0" radius="130.0" stroke="#f59e0b" strokeType="INSIDE" strokeWidth="4.0" />
+            <Circle fx:id="circleMedium" fill="#dbeafe" layoutX="150.0" layoutY="150.0" radius="150.0" stroke="#3b82f6" strokeType="INSIDE" strokeWidth="4.0" />
+            <Circle fx:id="circleLarge" fill="#dcfce7" layoutX="200.0" layoutY="200.0" radius="200.0" stroke="#22c55e" strokeType="INSIDE" strokeWidth="4.0" />
             <VBox fx:id="vboxParent" alignment="CENTER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>
                   <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Sorting Visualizer">
                      <font>
-                        <Font size="52.0" />
+                        <Font size="112.0" />
                      </font>
                   </Text>
-                  <StackPane maxHeight="70.0" maxWidth="500.0" minHeight="70.0" minWidth="500.0" prefHeight="70.0" prefWidth="500.0" VBox.vgrow="NEVER">
+                  <StackPane maxHeight="100.0" maxWidth="500.0" minHeight="100.0" minWidth="500.0" prefHeight="100.0" prefWidth="500.0" VBox.vgrow="NEVER">
                      <children>
                         <StackPane fx:id="stackpaneActionMessage">
                            <children>
                               <Text fx:id="txtActionMessage" strokeType="OUTSIDE" strokeWidth="0.0" text="Click anywhere to start">
                                  <font>
-                                    <Font size="24.0" />
+                                    <Font size="42.0" />
                                  </font>
                               </Text>
                            </children>

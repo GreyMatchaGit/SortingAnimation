@@ -46,6 +46,7 @@ public class NavigationService {
             if (FXML_URL == null)
                 throw new IllegalArgumentException();
             Scene scene = new Scene(FXMLLoader.load(FXML_URL));
+            stage.setFullScreen(true);
             stage.setScene(scene);
             stage.show();
         } catch (IllegalArgumentException e) {

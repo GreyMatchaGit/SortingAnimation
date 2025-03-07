@@ -80,11 +80,16 @@ public class LoadingScreenController implements Initializable {
             int currentX = (int) circle.getLayoutX();
             int currentY = (int) circle.getLayoutY();
 
-            if (currentX <= leftBorder || currentX >= rightBorder) {
+            int dynamicTopBorder = (int)circle.getRadius();
+            int dynamicLeftBorder = (int)circle.getRadius();
+            int dynamicRightBorder = (int)(anchorpaneParent.getWidth() - circle.getRadius());
+            int dynamicBottomBorder = (int)(anchorpaneParent.getHeight() - circle.getRadius());
+
+            if (currentX <= dynamicLeftBorder || currentX >= dynamicRightBorder) {
                 xDirection[0] = -xDirection[0];
             }
 
-            if (currentY <= topBorder || currentY >= bottomBorder) {
+            if (currentY <= dynamicTopBorder || currentY >= dynamicBottomBorder) {
                 yDirection[0] = -yDirection[0];
             }
 
