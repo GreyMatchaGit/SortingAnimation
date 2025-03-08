@@ -1,5 +1,6 @@
 package com.github.greymatchagit.sortinganimation.controllers;
 
+import com.github.greymatchagit.sortinganimation.util.navigation.NavigationService;
 import javafx.animation.KeyFrame;
 import javafx.animation.ScaleTransition;
 import javafx.animation.Timeline;
@@ -39,16 +40,36 @@ public class LoadingScreenController implements Initializable {
 
     private final Logger logger = Logger.getLogger(LoadingScreenController.class.getName());
 
+    private AnchorPane mainScreen;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        new Thread(() -> {
+            while (NavigationService.getMainScreenController().getMainScreen() == null) {
+                System.out.println("Main Screen from Controller is still null");
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
 
-        vboxParent.setOnMousePressed(_ -> System.out.println("Mouse is clicked!"));
+            Platform.runLater(() -> {
+                mainScreen = NavigationService.getMainScreenController().getMainScreen();
+                if (mainScreen == null) {
+                    logger.log(Level.SEVERE, "mainScreen is null.");
+                }
+                animateActionMessage();
+                animateCircle(circleLarge, 6);
+                animateCircle(circleMedium, 8);
+                animateCircle(circleSmall, 10);
+            });
+        }).start();
 
-        Platform.runLater(() -> {
-            animateActionMessage();
-            animateCircle(circleLarge, 6);
-            animateCircle(circleMedium, 8);
-            animateCircle(circleSmall, 10);
+        vboxParent.setOnMouseClicked(_ -> {
+            NavigationService.navigateTo(
+                NavigationService.Page.VisualizerScreen
+            );
         });
     }
 
@@ -67,8 +88,8 @@ public class LoadingScreenController implements Initializable {
 
         int topBorder = (int)circle.getRadius();
         int leftBorder = (int)circle.getRadius();
-        int rightBorder = (int)(anchorpaneParent.getWidth() - circle.getRadius());
-        int bottomBorder = (int)(anchorpaneParent.getHeight() - circle.getRadius());
+        int rightBorder = (int)(mainScreen.getWidth() - circle.getRadius());
+        int bottomBorder = (int)(mainScreen.getMinHeight() - circle.getRadius());
 
         circle.setLayoutX(random.nextInt(leftBorder, rightBorder));
         circle.setLayoutY(random.nextInt(topBorder, bottomBorder));
@@ -82,8 +103,8 @@ public class LoadingScreenController implements Initializable {
 
             int dynamicTopBorder = (int)circle.getRadius();
             int dynamicLeftBorder = (int)circle.getRadius();
-            int dynamicRightBorder = (int)(anchorpaneParent.getWidth() - circle.getRadius());
-            int dynamicBottomBorder = (int)(anchorpaneParent.getHeight() - circle.getRadius());
+            int dynamicRightBorder = (int)(mainScreen.getWidth() - circle.getRadius());
+            int dynamicBottomBorder = (int)(mainScreen.getHeight() - circle.getRadius());
 
             if (currentX <= dynamicLeftBorder || currentX >= dynamicRightBorder) {
                 xDirection[0] = -xDirection[0];
