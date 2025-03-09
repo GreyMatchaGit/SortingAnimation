@@ -35,6 +35,8 @@ public class Element<N> extends StackPane implements Cloneable {
         return rectangle;
     }
 
+    public boolean isSelected() { return isSelected; }
+
     public double width() {
         return background.getWidth();
     }

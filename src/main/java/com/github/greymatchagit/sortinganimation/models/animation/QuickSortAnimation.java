@@ -17,6 +17,10 @@ public class QuickSortAnimation<N> {
     String pivotChoice;
     Pane displayPane;
 
+    /**
+     * TODO: Check the Thread sleeps make sure that it doesn't interrupt the animations by
+     *  putting them inside Platform.runLater();
+     */
     public QuickSortAnimation(Pane displayPane, ArrayList<? extends Number> list, String partitioningType, String pivotChoice) {
         this.displayPane = displayPane;
         this.list = (ArrayList<N>) list;
@@ -52,7 +56,12 @@ public class QuickSortAnimation<N> {
             elementTransitions.add(fadeInElement(current));
             displayPane.getChildren().add(current);
         }
-        elementTransitions.forEach(FadeTransition::play);
+        Platform.runLater(() -> elementTransitions.forEach(FadeTransition::play));
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         testing();
     }
 
@@ -77,24 +86,24 @@ public class QuickSortAnimation<N> {
 
     private void testing() {
         new Thread(() -> {
-//            for (int i = 0; i < elements.size() / 2; ++i) {
-//                int left = i;
-//                int right = elements.size() - i - 1;
-//                elements.get(left).setSelected(true);
-//                elements.get(right).setSelected(true);
-//                swapAnimation(left, right);
-//
-//                try {
-//                    Thread.sleep(1000);
-//                } catch (InterruptedException e) {
-//                    throw new RuntimeException(e);
-//                }
-//
-//                elements.get(left).setSelected(false);
-//                elements.get(right).setSelected(false);
-//            }
+            for (int i = 0; i < elements.size() / 2; ++i) {
+                int left = i;
+                int right = elements.size() - i - 1;
+                elements.get(left).setSelected(true);
+                elements.get(right).setSelected(true);
+                Platform.runLater(() -> swapAnimation(left, right));
 
-            Platform.runLater(() -> testing(elements));
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+
+                elements.get(left).setSelected(false);
+                elements.get(right).setSelected(false);
+            }
+
+//            Platform.runLater(() -> testing(elements));
         }).start();
     }
 
@@ -110,23 +119,28 @@ public class QuickSortAnimation<N> {
 
     private ArrayList<Element<N>> partitionAnimation(ArrayList<Element<N>> parentPartition, int low, int high, boolean toLeft) {
         ArrayList<Element<N>> partition = new ArrayList<>();
-        if (low > high)
+        if (low >= high)
             return partition;
 
-        for (int i = low; i <= high; ++i) {
-            Element<N> element;
-            final int index = i;
-            Platform.runLater(() -> {
-                        element = parentPartition.get(index).recreate();
-                    });
-            if (element == parentPartition.get(i))
-                System.out.println("They're the same shit.");
-            partition.add(element);
-        }
+        new Thread(() -> {
+            for (int i = low; i <= high; ++i) {
+                Element<N> original = parentPartition.get(i);
+                N value = original.getValue();
+                Element<N> element = new Element<>(0, value);
+                element.setLayoutY(original.getLayoutY());
+                element.setLayoutX(original.getLayoutX());
+                element.setSelected(element.isSelected());
+                if (element.hashCode() == original.hashCode())
+                    System.out.println("They're the same shit.");
+                partition.add(element);
+            }
 
-        Platform.runLater(() -> {
-            partition.forEach(e -> displayPane.getChildren().add(e));
-        });
+            Platform.runLater(() -> {
+                partition.forEach(e -> displayPane.getChildren().add(e));
+            });
+        }).start();
+
+        if (partition.isEmpty()) return partition;
 
         int horizontalDirection = (int)((partition.getFirst().height() * partition.size()) / 2);
         if (toLeft) horizontalDirection *= -1;
@@ -140,7 +154,13 @@ public class QuickSortAnimation<N> {
             elementTranslates.add(movePartitionDown);
         }
 
-        elementTranslates.forEach(TranslateTransition::play);
+        Platform.runLater(() -> elementTranslates.forEach(TranslateTransition::play));
+
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
 
         return partition;
     }
