@@ -1,6 +1,6 @@
 package com.github.greymatchagit.sortinganimation.controllers;
 
-import com.github.greymatchagit.sortinganimation.models.QuickSortAlgorithm;
+import com.github.greymatchagit.sortinganimation.models.animation.QuickSortAnimation;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -64,14 +64,20 @@ public class VisualizerScreenController implements Initializable {
 
     private void startQuickSortAlgorithm() {
         ArrayList<Integer> sample = new ArrayList<>();
-        sample.add(1);
-        sample.add(2);
-        sample.add(3);
-        sample.add(4);
-        sample.add(5);
+        sample.add(34);
+        sample.add(93);
+        sample.add(54);
+        sample.add(12);
+        sample.add(79);
+        sample.add(39);
+        sample.add(7);
+        sample.add(24);
+        sample.add(81);
+        sample.add(46);
+
         String partitioningType = "Lomuto";
         String pivotChoice = "First Index";
-        QuickSortAlgorithm algo = new QuickSortAlgorithm(displayPane, sample, partitioningType, pivotChoice);
+        QuickSortAnimation algo = new QuickSortAnimation(displayPane, sample, partitioningType, pivotChoice);
         algo.start();
     }
 

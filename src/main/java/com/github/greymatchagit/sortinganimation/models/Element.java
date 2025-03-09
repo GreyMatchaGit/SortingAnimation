@@ -28,4 +28,22 @@ public class Element extends StackPane {
 
         getChildren().addAll(background, text);
     }
+
+    public double width() {
+        return background.getWidth();
+    }
+
+    public double height() {
+        return background.getHeight();
+    }
+
+    public void setSelected(boolean isSelected) {
+        if (isSelected) {
+            background.setFill(Color.web(Constant.Color.BACKGROUND_GREEN));
+            background.setStroke(Color.web(Constant.Color.OUTLINE_GREEN));
+        } else {
+            background.setFill(Color.web(Constant.Color.BACKGROUND_BLUE));
+            background.setStroke(Color.web(Constant.Color.OUTLINE_BLUE));
+        }
+    }
 }
