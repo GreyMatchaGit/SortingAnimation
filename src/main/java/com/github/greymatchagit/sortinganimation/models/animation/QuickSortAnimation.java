@@ -99,65 +99,101 @@ public class QuickSortAnimation<N> {
                     throw new RuntimeException(e);
                 }
 
+
                 elements.get(left).setSelected(false);
                 elements.get(right).setSelected(false);
             }
 
-//            Platform.runLater(() -> testing(elements));
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            testing(elements);
         }).start();
     }
 
-    private void testing(ArrayList<Element<N>> partition) {
-        if (partition.size() <= 1) return;
+    private void anotherTest() {
+        ArrayList<Element<N>> elementsReplicas = new ArrayList<>();
+        for (Element<N> e : elements) {
+            Element<N> replica = e.recreate();
+            elementsReplicas.add(replica);
+        }
+
+        Platform.runLater(() -> {
+            for (Element<N> e : elementsReplicas) {
+                displayPane.getChildren().add(e);
+            }
+        });
+
+        ArrayList<TranslateTransition> transitions = new ArrayList<>();
+
+        for (Element<N> e : elementsReplicas) {
+            TranslateTransition translateTransition = new TranslateTransition(Duration.millis(500), e);
+            translateTransition.setToY(200);
+            transitions.add(translateTransition);
+        }
+
+        Platform.runLater(() -> transitions.forEach(TranslateTransition::play));
+    }
+
+    private void testing(ArrayList<Element<N>> originalPartition) {
+        if (originalPartition.size() <= 1) return;
+        ArrayList<Element<N>> partition = new ArrayList<>();
+        for (Element<N> e : originalPartition) {
+            Element<N> replica = e.recreate();
+            partition.add(replica);
+        }
         int middle = partition.size() / 2;
-        if (middle == 0 || middle >= partition.size()) return;
-        ArrayList<Element<N>> leftPartition = partitionAnimation(partition, 0, middle, true);
-        ArrayList<Element<N>> rightPartition = partitionAnimation(partition, middle + 1, partition.size() - 1, false);
+        if (partition.size() % 2 != 0) middle++;
+        if (middle >= partition.size()) return;
+        ArrayList<Element<N>> leftPartition = partitionAnimation(partition, 0, middle - 1, true);
+        ArrayList<Element<N>> rightPartition = partitionAnimation(partition, middle, partition.size() - 1, false);
         testing(leftPartition);
         testing(rightPartition);
     }
 
     private ArrayList<Element<N>> partitionAnimation(ArrayList<Element<N>> parentPartition, int low, int high, boolean toLeft) {
         ArrayList<Element<N>> partition = new ArrayList<>();
-        if (low >= high)
+
+        if (low > high)
             return partition;
 
-        new Thread(() -> {
-            for (int i = low; i <= high; ++i) {
-                Element<N> original = parentPartition.get(i);
-                N value = original.getValue();
-                Element<N> element = new Element<>(0, value);
-                element.setLayoutY(original.getLayoutY());
-                element.setLayoutX(original.getLayoutX());
-                element.setSelected(element.isSelected());
-                if (element.hashCode() == original.hashCode())
-                    System.out.println("They're the same shit.");
-                partition.add(element);
-            }
-
-            Platform.runLater(() -> {
-                partition.forEach(e -> displayPane.getChildren().add(e));
-            });
-        }).start();
+        for (int i = low; i <= high; ++i) {
+            Element<N> replica = parentPartition.get(i);
+            partition.add(replica);
+        }
 
         if (partition.isEmpty()) return partition;
 
-        int horizontalDirection = (int)((partition.getFirst().height() * partition.size()) / 2);
+        Platform.runLater(() -> {
+            for (Element<N> e : partition) {
+                displayPane.getChildren().add(e);
+            }
+        });
+
+        int horizontalDirection = (int)((partition.getFirst().width() * partition.size()) / 2);
         if (toLeft) horizontalDirection *= -1;
 
         ArrayList<TranslateTransition> elementTranslates = new ArrayList<>();
 
         for (Element<N> element : partition) {
             TranslateTransition movePartitionDown = new TranslateTransition(Duration.millis(500), element);
-            movePartitionDown.setToY(element.height() * 2);
+            movePartitionDown.setToY(element.height() * 1.5);
             movePartitionDown.setToX(horizontalDirection);
+            movePartitionDown.setOnFinished(_ -> {
+                element.setLayoutX(element.getLayoutX() + element.getTranslateX());
+                element.setLayoutY(element.getLayoutY() + element.getTranslateY());
+                element.setTranslateX(0);
+                element.setTranslateY(0);
+            });
             elementTranslates.add(movePartitionDown);
         }
 
         Platform.runLater(() -> elementTranslates.forEach(TranslateTransition::play));
 
         try {
-            Thread.sleep(500);
+            Thread.sleep(550);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -193,6 +229,18 @@ public class QuickSortAnimation<N> {
         rightToDown.setOnFinished(_ -> rightToLeft.play());
         leftToRight.setOnFinished(_ -> leftToDown.play());
         rightToLeft.setOnFinished(_ -> rightToUp.play());
+        leftToDown.setOnFinished(_ -> {
+            left.setLayoutX(left.getLayoutX() + left.getTranslateX());
+            left.setLayoutY(left.getLayoutY() + left.getTranslateY());
+            left.setTranslateX(0);
+            left.setTranslateY(0);
+        });
+        rightToUp.setOnFinished(_ -> {
+            right.setLayoutX(right.getLayoutX() + right.getTranslateX());
+            right.setLayoutY(right.getLayoutY() + right.getTranslateY());
+            right.setTranslateX(0);
+            right.setTranslateY(0);
+        });
 
         // Play altogether
         leftToUp.play();

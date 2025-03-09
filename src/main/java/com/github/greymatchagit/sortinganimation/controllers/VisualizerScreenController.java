@@ -44,6 +44,7 @@ public class VisualizerScreenController implements Initializable {
             .selectedItemProperty()
             .addListener((observable, oldValue, newValue) -> {
                 if (!newValue.equals(oldValue)) {
+                    displayPane.getChildren().clear();
                     actionSortingSelector();
                 }
             }
