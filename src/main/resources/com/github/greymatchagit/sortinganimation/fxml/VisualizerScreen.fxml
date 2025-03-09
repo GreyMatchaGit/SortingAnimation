@@ -1,14 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<AnchorPane maxHeight="1080.0" maxWidth="1920.0" minHeight="600.0" minWidth="1024.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.greymatchagit.sortinganimation.controllers.VisualizerScreenController">
+<AnchorPane maxHeight="1080.0" maxWidth="1920.0" minHeight="600.0" minWidth="1024.0" stylesheets="@../style/General.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.greymatchagit.sortinganimation.controllers.VisualizerScreenController">
    <children>
       <BorderPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <top>
@@ -23,16 +27,56 @@
                       <RowConstraints minHeight="60.0" vgrow="ALWAYS" />
                     </rowConstraints>
                      <children>
-                        <ComboBox prefWidth="150.0" promptText="Select">
-                           <cursor>
-                              <Cursor fx:constant="HAND" />
-                           </cursor>
-                        </ComboBox>
+                        <HBox alignment="CENTER_LEFT" spacing="10.0">
+                           <children>
+                              <ComboBox fx:id="cboxSortingSelector" prefWidth="150.0" promptText="Sorting Algo">
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
+                              </ComboBox>
+                              <ComboBox fx:id="cboxOne" prefWidth="150.0" promptText="cboxOne" visible="false">
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
+                              </ComboBox>
+                              <ComboBox fx:id="cboxTwo" prefWidth="150.0" promptText="cboxTwo" visible="false">
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
+                              </ComboBox>
+                              <ComboBox fx:id="cboxThree" prefWidth="150.0" promptText="cboxThree" visible="false">
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
+                              </ComboBox>
+                              <ComboBox fx:id="cboxFour" prefWidth="150.0" promptText="cboxFour" visible="false">
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
+                              </ComboBox>
+                           </children>
+                           <padding>
+                              <Insets left="10.0" right="5.0" />
+                           </padding>
+                        </HBox>
+                        <HBox alignment="CENTER_RIGHT" spacing="10.0" GridPane.columnIndex="1">
+                           <children>
+                              <Button fx:id="buttonSetElements" mnemonicParsing="false" text="Set Elements" />
+                              <Button fx:id="buttonRandomize" mnemonicParsing="false" text="Randomize" />
+                              <Button fx:id="buttonStart" mnemonicParsing="false" text="Start" />
+                           </children>
+                           <padding>
+                              <Insets left="5.0" right="10.0" />
+                           </padding>
+                        </HBox>
                      </children>
                   </GridPane>
                </children>
             </AnchorPane>
          </top>
+         <center>
+            <Pane fx:id="displayPane" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+         </center>
       </BorderPane>
    </children>
 </AnchorPane>

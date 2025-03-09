@@ -2,6 +2,7 @@ module com.github.greymatchagit.sortinganimation {
     requires javafx.controls;
     requires javafx.fxml;
     requires java.sql;
+    requires jdk.xml.dom;
 
 
     opens com.github.greymatchagit.sortinganimation to javafx.fxml;
