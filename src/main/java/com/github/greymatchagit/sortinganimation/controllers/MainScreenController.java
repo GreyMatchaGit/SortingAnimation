@@ -10,21 +10,22 @@ import java.util.ResourceBundle;
 
 public class MainScreenController implements Initializable {
     @FXML
-    public AnchorPane mainScreen;
+    private AnchorPane mainScreen;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        System.out.println("MainScreenController: Finished initializing.");
+
     }
 
     public AnchorPane getMainScreen() {
         return mainScreen;
     }
 
-    public void setContent(Node node) {
-        while (mainScreen == null) {
+    public void clearContent() {
+        mainScreen.getChildren().clear();
+    }
 
-        }
+    public void setContent(Node node) {
         mainScreen.getChildren().setAll(node);
     }
 }

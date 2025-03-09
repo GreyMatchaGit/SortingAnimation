@@ -2,11 +2,15 @@ package com.github.greymatchagit.sortinganimation.util.navigation;
 
 import com.github.greymatchagit.sortinganimation.controllers.MainScreenController;
 import com.github.greymatchagit.sortinganimation.util.constants.Constant;
+import javafx.animation.FadeTransition;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import javafx.util.Duration;
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.logging.Level;
@@ -26,6 +30,7 @@ public class NavigationService {
     private static Stage stage = null;
     private static MainScreenController mainScreenController = null;
     private static final Logger logger = Logger.getLogger("NavigationService");
+    private static Boolean withTransition = false;
 
     public static void setStage(Stage stage) {
         if (NavigationService.stage != null)
@@ -97,6 +102,10 @@ public class NavigationService {
         }
     }
 
+    public static void setEnableTransition(Boolean value) {
+        withTransition = value;
+    }
+
     public static void navigateTo(String fxmlName) {
         final String FXML_PATH =
             Constant.Navigation.GROUP_NAME_PATH +
@@ -117,7 +126,28 @@ public class NavigationService {
             AnchorPane.setRightAnchor(content, 0.0);
             AnchorPane.setLeftAnchor(content, 0.0);
 
-            mainScreenController.setContent(content);
+            if (withTransition) {
+
+                Platform.runLater(() -> {
+                    FadeTransition fadeOut = new FadeTransition(Duration.millis(500), mainScreenController.getMainScreen());
+                    fadeOut.setFromValue(1.0);
+                    fadeOut.setToValue(0.0);
+                    fadeOut.setOnFinished(event -> {
+                        mainScreenController.clearContent();
+                        mainScreenController.setContent(content);
+                        FadeTransition fadeIn = new FadeTransition(Duration.millis(500), mainScreenController.getMainScreen());
+                        fadeIn.setFromValue(0.0);
+                        fadeIn.setToValue(1.0);
+                        fadeIn.play();
+                    });
+                    fadeOut.play();
+                });
+
+            } else {
+                mainScreenController.clearContent();
+                mainScreenController.setContent(content);
+            }
+
         } catch (IllegalArgumentException e) {
             logger.log(
                 Level.WARNING,

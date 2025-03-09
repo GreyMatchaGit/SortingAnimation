@@ -40,22 +40,15 @@ public class LoadingScreenController implements Initializable {
 
     private final Logger logger = Logger.getLogger(LoadingScreenController.class.getName());
 
+    private MainScreenController mainScreenController;
     private AnchorPane mainScreen;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        mainScreenController = NavigationService.getMainScreenController();
         new Thread(() -> {
-            while (NavigationService.getMainScreenController().getMainScreen() == null) {
-                System.out.println("Main Screen from Controller is still null");
-                try {
-                    Thread.sleep(10);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-
             Platform.runLater(() -> {
-                mainScreen = NavigationService.getMainScreenController().getMainScreen();
+                mainScreen = mainScreenController.getMainScreen();
                 if (mainScreen == null) {
                     logger.log(Level.SEVERE, "mainScreen is null.");
                 }
@@ -67,6 +60,7 @@ public class LoadingScreenController implements Initializable {
         }).start();
 
         vboxParent.setOnMouseClicked(_ -> {
+            NavigationService.setEnableTransition(true);
             NavigationService.navigateTo(
                 NavigationService.Page.VisualizerScreen
             );
@@ -94,8 +88,11 @@ public class LoadingScreenController implements Initializable {
         circle.setLayoutX(random.nextInt(leftBorder, rightBorder));
         circle.setLayoutY(random.nextInt(topBorder, bottomBorder));
 
-        final int[] xDirection = {speed};
-        final int[] yDirection = {speed};
+        int xRand = random.nextInt(1, 1000);
+        int yRand = random.nextInt(1, 1000);
+
+        final int[] xDirection = {xRand% 2 == 0 ? speed : -speed};
+        final int[] yDirection = {yRand% 2 == 0 ? speed : -speed};
 
         Timeline circleMovement = new Timeline(new KeyFrame(Duration.millis(24), e-> {
             int currentX = (int) circle.getLayoutX();
