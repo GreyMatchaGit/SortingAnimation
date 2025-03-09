@@ -37,8 +37,6 @@ public class QuickSortAlgorithm {
             elements.add(element);
         }
 
-        System.out.println(elements.size());
-
         for (int i = 0; i < elements.size(); ++i) {
             Element current = elements.get(i);
             current.setLayoutX(i * 50 + 5);
