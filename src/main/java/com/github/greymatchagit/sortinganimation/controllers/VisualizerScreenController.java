@@ -55,6 +55,7 @@ public class VisualizerScreenController implements Initializable {
     }
 
     private void actionStartButton() {
+        displayPane.getChildren().clear();
         String selectedSortingAlgorithm = cboxSortingSelector.getValue();
 
         switch (selectedSortingAlgorithm) {
@@ -77,8 +78,11 @@ public class VisualizerScreenController implements Initializable {
 
         String partitioningType = "Lomuto";
         String pivotChoice = "First Index";
-        QuickSortAnimation algo = new QuickSortAnimation(displayPane, sample, partitioningType, pivotChoice);
+        QuickSortAnimation<Integer> algo = new QuickSortAnimation<>(displayPane, sample, partitioningType, pivotChoice);
         algo.start();
+
+        sample.clear();
+        sample.addAll(algo.getList());
     }
 
     private void setUpEmptySort() {
