@@ -55,8 +55,12 @@ public class Element<N> extends StackPane implements Cloneable {
         }
     }
 
-    public N getValue() {
-        return value;
+    public Double getValue() {
+        return Double.parseDouble(value.toString());
+    }
+
+    public Rectangle background() {
+        return background;
     }
 
     public Element<N> recreate() {

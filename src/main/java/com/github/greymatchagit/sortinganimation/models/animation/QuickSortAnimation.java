@@ -1,40 +1,39 @@
 package com.github.greymatchagit.sortinganimation.models.animation;
 
 import com.github.greymatchagit.sortinganimation.models.Element;
+import com.github.greymatchagit.sortinganimation.util.constants.Constant;
 import javafx.animation.FadeTransition;
 import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.util.Duration;
 
 import java.util.ArrayList;
 import java.util.Random;
 
-public class QuickSortAnimation<N> {
-    ArrayList<N> list;
+public class QuickSortAnimation<N> extends SortAnimation<N> {
     ArrayList<Element<N>> elements;
     String partitioningType;
     String pivotChoice;
-    Pane displayPane;
 
     /**
      * TODO: Check the Thread sleeps make sure that it doesn't interrupt the animations by
      *  putting them inside Platform.runLater();
      */
     public QuickSortAnimation(Pane displayPane, ArrayList<? extends Number> list, String partitioningType, String pivotChoice) {
-        this.displayPane = displayPane;
-        this.list = (ArrayList<N>) list;
+        super(displayPane, list);
         this.partitioningType = partitioningType;
         this.pivotChoice = pivotChoice;
         elements = new ArrayList<>();
     }
 
+    @Override
     public void start() {
-        Integer pivot = getPivot();
         createElements();
-
         Platform.runLater(() -> {
             setUpElementsInPane();
+            quickSort(0, elements.size() - 1);
         });
     }
 
@@ -62,7 +61,6 @@ public class QuickSortAnimation<N> {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        testing();
     }
 
     private FadeTransition fadeInElement(Element<N> element) {
@@ -84,6 +82,85 @@ public class QuickSortAnimation<N> {
         };
     }
 
+    int lomutoPartition(int low, int high) {
+        elements.get(high).background().setFill(Color.web(Constant.Color.BACKGROUND_AMBER));
+        elements.get(high).background().setStroke(Color.web(Constant.Color.OUTLINE_AMBER));
+        double pivot = elements.get(high).getValue();
+        int i = low - 1;
+
+        for (int j = low; j <= high - 1; ++j) {
+            elements.get(j).setSelected(true);
+
+            try {
+                elements.get(j - 1).setSelected(false);
+            } catch (RuntimeException e) {}
+
+            try {
+                elements.get(i).setSelected(true);
+            } catch (RuntimeException e) {}
+
+            try {
+                Thread.sleep(1050);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            if (elements.get(j).getValue() < pivot) {
+                i++;
+                elements.get(i).setSelected(true);
+                try {
+                    elements.get(i - 1).setSelected(false);
+                } catch (RuntimeException e) {}
+                try {
+                    Thread.sleep(1050);
+                } catch (InterruptedException e) {}
+
+                int finalI = i;
+                int finalJ = j;
+
+                if (i != j) {
+                    Platform.runLater(() -> swapAnimation(finalI, finalJ));
+                    try {
+                        Thread.sleep(1050);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+        }
+
+        int finalI1 = i;
+        try {
+            elements.get(finalI1).setSelected(false);
+            elements.get(finalI1 + 1).setSelected(true);
+        } catch (RuntimeException e) {}
+        if (finalI1 != high) {
+            Platform.runLater(() -> swapAnimation(finalI1 + 1, high));
+            try {
+                Thread.sleep(1050);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        for (Element<N> e : elements) {
+            e.setSelected(false);
+        }
+
+        return i + 1;
+    }
+
+    private void quickSort(int low, int high) {
+        new Thread(() -> {
+            if (low < high) {
+                int pivot = lomutoPartition(low, high);
+                partitionAnimation(elements, low, pivot - 1, true);
+                quickSort(low, pivot - 1);
+                partitionAnimation(elements, pivot + 1, high, false);
+                quickSort(pivot + 1, high);
+            }
+        }).start();
+    }
+
     private void testing() {
         new Thread(() -> {
             for (int i = 0; i < elements.size() / 2; ++i) {
@@ -98,7 +175,6 @@ public class QuickSortAnimation<N> {
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
-
 
                 elements.get(left).setSelected(false);
                 elements.get(right).setSelected(false);
@@ -254,7 +330,7 @@ public class QuickSortAnimation<N> {
     public ArrayList<N> getList() {
         list.clear();
         for (Element<N> element : elements) {
-            list.add(element.getValue());
+            list.add((N) element.getValue());
         }
         return list;
     }
